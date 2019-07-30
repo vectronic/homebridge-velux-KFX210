@@ -1,0 +1,29 @@
+{
+  "name": "homebridge-plugin-velux-kfx210",
+  "version": "1.0.0",
+  "description": "A Homebridge plugin integrating with a Velux KFX 210 control panel via RaspberryPi + Pimoroni Automation HAT.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vectronic/homebridge-plugin-velux-KFX210.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vectronic/homebridge-plugin-velux-KFX210/issues"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "velux",
+    "web",
+    "raspberrypi",
+    "pimorono",
+    "automation"
+  ],
+  "author": "vectronic",
+  "license": "MIT",
+  "engines": {
+    "homebridge": ">=0.4.46"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
