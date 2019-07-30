@@ -68,9 +68,13 @@ function KFX210Accessory(log, config) {
 
 KFX210Accessory.prototype.startStateTimeout = function() {
 
+    this.log('startStateTimeout()');
+
     const that = this;
 
     this.stateTimeout = setTimeout((function() {
+
+        this.log('stateTimeout occurred');
 
         const alarmInput = spawn('python', [that.inputScript, '1']);
 
@@ -115,28 +119,38 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
     const that = this;
 
     if (this.comfort) {
-        const comfortOpen = spawn('python', [that.relayScript, '1', this.comfortSwitchTime]);
+        try {
+            const comfortOpen = spawn('python', [that.relayScript, '1', this.comfortSwitchTime]);
 
-        comfortOpen.stdout.on('close', function () {
+            comfortOpen.stdout.on('close', function () {
 
-            that.log('comfortOpen completed');
+                that.log('comfortOpen completed');
 
-        });
-        comfortOpen.stdout.on('error', function (err) {
-            that.log(`comfortOpen error: ${err}`)
-        });
+            });
+            comfortOpen.stdout.on('error', function (err) {
+                that.log(`comfortOpen error: ${err}`)
+            });
+        }
+        catch (error) {
+            this.log(`Failed to spawn: ${error}`);
+        }
     }
     else {
-        const comfortClose = spawn('python', [that.relayScript, '2', this.comfortSwitchTime]);
+        try {
+            const comfortClose = spawn('python', [that.relayScript, '2', this.comfortSwitchTime]);
 
-        comfortClose.stdout.on('close', function () {
+            comfortClose.stdout.on('close', function () {
 
-            that.log('comfortClose completed');
+                that.log('comfortClose completed');
 
-        });
-        comfortClose.stdout.on('error', function (err) {
-            that.log(`comfortClose error: ${err}`)
-        });
+            });
+            comfortClose.stdout.on('error', function (err) {
+                that.log(`comfortClose error: ${err}`)
+            });
+        }
+        catch (error) {
+            this.log(`Failed to spawn: ${error}`);
+        }
     }
     callback(null);
 };
