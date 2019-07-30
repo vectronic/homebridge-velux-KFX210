@@ -41,10 +41,10 @@ function KFX210Accessory(log, config) {
     this.error = false;
     this.comfort = false;
 
-    this.alarmService = new Service.ContactSensor('Alarm');
+    this.alarmService = new Service.ContactSensor('Alarm', 'alarm');
     this.alarmService.getCharacteristic(Characteristic.ContactSensorState).on('get', this.getAlarm.bind(this));
 
-    this.errorService = new Service.ContactSensor('Error');
+    this.errorService = new Service.ContactSensor('Error', 'error');
     this.errorService.getCharacteristic(Characteristic.ContactSensorState).on('get', this.getError.bind(this));
 
     this.comfortService = new Service.Switch('Comfort', 'comfort');
