@@ -115,80 +115,27 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
     const that = this;
 
     if (this.comfort) {
-        // Turn off the comfort close relay
-        const comfortCloseOff = spawn('python', [that.relayScript, '2', 'off']);
+        const comfortOpen = spawn('python', [that.relayScript, '1', this.comfortSwitchTime]);
 
-        comfortCloseOff.stdout.on('close', function () {
+        comfortOpen.stdout.on('close', function () {
 
-            that.log('comfortCloseOff completed');
-
-            // Turn on the comfort open relay
-            const comfortOpenOn = spawn('python', [that.relayScript, '1', 'on']);
-
-            comfortOpenOn.stdout.on('close', function () {
-
-                that.log('comfortOpenOn completed');
-
-                // Set timeout to turn comfort open relay off
-                that.comfortOpenOnTimeout = setTimeout((function() {
-
-                    const comfortOpenOff = spawn('python', [that.relayScript, '1', 'off']);
-
-                    comfortOpenOff.stdout.on('close', function () {
-                        that.log('comfortOpenOff completed');
-                    });
-                    comfortOpenOff.stdout.on('error', function (err) {
-                        that.log(`comfortOpenOff error: ${err}`)
-                    });
-                }).bind(this), this.comfortSwitchTime * 1000);
-
-                that.comfortOpenOnTimeout.unref();
-            });
-            comfortCloseOff.stdout.on('error', function (err) {
-                that.log(`comfortOpenOn error: ${err}`)
-            });
+            that.log('comfortOpen completed');
 
         });
-        comfortCloseOff.stdout.on('error', function (err) {
-            that.log(`comfortCloseOff error: ${err}`)
+        comfortOpen.stdout.on('error', function (err) {
+            that.log(`comfortOpen error: ${err}`)
         });
     }
     else {
-        // Turn off the comfort open relay
-        const comfortOpenOff = spawn('python', [that.relayScript, '1', 'off']);
+        const comfortClose = spawn('python', [that.relayScript, '2', this.comfortSwitchTime]);
 
-        comfortOpenOff.stdout.on('close', function () {
-            that.log('comfortOpenOff completed');
+        comfortClose.stdout.on('close', function () {
 
-            // Turn on the comfort close relay
-            const comfortCloseOn = spawn('python', [that.relayScript, '2', 'on']);
-
-            comfortCloseOn.stdout.on('close', function () {
-                that.log('comfortClosenOn completed');
-
-                // Set timeout to turn comfort close relay off
-                that.comfortCloseeOnTimeout = setTimeout((function() {
-
-                    const comfortCloseOff = spawn('python', [that.relayScript, '2', 'off']);
-
-                    comfortCloseOff.stdout.on('close', function () {
-                        that.log('comfortCloseOff completed');
-
-                    });
-                    comfortCloseOff.stdout.on('error', function (err) {
-                        that.log(`comfortCloseOff error: ${err}`)
-                    });
-                }).bind(this), this.comfortSwitchTime * 1000);
-
-                that.comfortCloseeOnTimeout.unref();
-            });
-            comfortCloseOn.stdout.on('error', function (err) {
-                that.log(`comfortClosenOn error: ${err}`)
-            });
+            that.log('comfortClose completed');
 
         });
-        comfortOpenOff.stdout.on('error', function (err) {
-            that.log(`comfortOpenOff error: ${err}`)
+        comfortClose.stdout.on('error', function (err) {
+            that.log(`comfortClose error: ${err}`)
         });
     }
     callback(null);

@@ -1,26 +1,23 @@
 import automationhat
 import sys
+import time
 
 if len(sys.argv) != 3:
-    print('Usage: python ./relay.py <relayNumber> <state>')
+    print('Usage: python ./relay.py <relayNumber> <onTime>')
 else:
 
     relayNumber = sys.argv[1]
-    state = sys.argv[2]
+    onTime = sys.argv[2]
 
     if relayNumber == '1':
-        if state == 'on':
-            automationhat.relay.one.on()
-        else:
-            automationhat.relay.one.off()
+        automationhat.relay.one.on()
+        time.sleep(float(onTime))
+        automationhat.relay.one.off()
     elif relayNumber == '2':
-        if state == 'on':
-            automationhat.relay.two.on()
-        else:
-            automationhat.relay.two.off()
+        automationhat.relay.two.on()
+        time.sleep(float(onTime))
+        automationhat.relay.two.off()
     elif relayNumber == '3':
-        if state == 'on':
-            automationhat.relay.three.on()
-        else:
-            automationhat.relay.three.off()
-
+        automationhat.relay.three.on()
+        time.sleep(float(onTime))
+        automationhat.relay.three.off()
