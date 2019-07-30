@@ -34,8 +34,8 @@ function KFX210Accessory(log, config) {
 
     this.name = 'Velux KFX210';
 
-    this.statePollInterval = config.state_poll_interval || 30;
-    this.comfortSwitchTime = config.comfort_switch_time || 1;
+    this.statePollInterval = config.state_poll_interval || 10;
+    this.comfortSwitchTime = config.comfort_switch_time || 2;
 
     this.alarm = false;
     this.error = false;
@@ -62,26 +62,30 @@ function KFX210Accessory(log, config) {
 
 KFX210Accessory.prototype.startStateTimeout = function() {
 
-    this.stateTimeout = setTimeout((function() {
+    const that = this;
 
-        const that = this;
+    this.stateTimeout = setTimeout((function() {
 
         const alarmInput = spawn('python', ['./input.py', '1']);
 
         alarmInput.stdout.on('data', function (data) {
-            that.alarm = data.toString() === '1';
+            const result = data.toString();
+            that.log(`alarmInput result: ${result}`);
+            that.alarm = (result === '1');
         });
         alarmInput.stdout.on('error', function (err) {
-            that.log(`alarmInput: ${err}`)
+            that.log(`alarmInput error: ${err}`)
         });
 
         const errorInput = spawn('python', ['./input.py', '2']);
 
         errorInput.stdout.on('data', function (data) {
-            that.error = data.toString() === '1';
+            const result = data.toString();
+            that.log(`errorInput result: ${result}`);
+            that.error = (result === '1');
         });
         errorInput.stdout.on('error', function (err) {
-            that.log(`errorInput: ${err}`)
+            that.log(`errorInput error: ${err}`)
         });
 
         this.startStateTimeout();
@@ -91,14 +95,14 @@ KFX210Accessory.prototype.startStateTimeout = function() {
 };
 
 
-KFX210Accessory.prototype.getComfort = function(callback, context) {
-    this.log(`Getting current value of Comfort: ${this.comfort} via context: ${context}`);
+KFX210Accessory.prototype.getComfort = function(callback) {
+    this.log(`Getting current value of Comfort: ${this.comfort}`);
     callback(null, this.comfort);
 };
 
 
-KFX210Accessory.prototype.setComfort = function(comfort, callback, context) {
-    this.log(`Request to set current value of Comfort to: ${comfort} via context: ${context}`);
+KFX210Accessory.prototype.setComfort = function(comfort, callback) {
+    this.log(`Request to set current value of Comfort to: ${comfort}`);
 
     this.comfort = comfort;
 
@@ -122,25 +126,25 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback, context) {
                 // Set timeout to turn comfort open relay off
                 that.comfortOpenOnTimeout = setTimeout((function() {
 
-                    const comfortOpenOff = spawn('python', ['./input.py', '1', 'off']);
+                    const comfortOpenOff = spawn('python', ['./relay.py', '1', 'off']);
 
                     comfortOpenOff.stdout.on('close', function () {
                         that.log('comfortOpenOff completed');
                     });
                     comfortOpenOff.stdout.on('error', function (err) {
-                        that.log(`comfortOpenOff: ${err}`)
+                        that.log(`comfortOpenOff error: ${err}`)
                     });
                 }).bind(this), this.comfortSwitchTime * 1000);
 
                 that.comfortOpenOnTimeout.unref();
             });
             comfortCloseOff.stdout.on('error', function (err) {
-                that.log(`comfortOpenOn: ${err}`)
+                that.log(`comfortOpenOn error: ${err}`)
             });
 
         });
         comfortCloseOff.stdout.on('error', function (err) {
-            that.log(`comfortCloseOff: ${err}`)
+            that.log(`comfortCloseOff error: ${err}`)
         });
     }
     else {
@@ -159,40 +163,40 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback, context) {
                 // Set timeout to turn comfort close relay off
                 that.comfortCloseeOnTimeout = setTimeout((function() {
 
-                    const comfortCloseOff = spawn('python', ['./input.py', '2', 'off']);
+                    const comfortCloseOff = spawn('python', ['./relay.py', '2', 'off']);
 
                     comfortCloseOff.stdout.on('close', function () {
                         that.log('comfortCloseOff completed');
 
                     });
                     comfortCloseOff.stdout.on('error', function (err) {
-                        that.log(`comfortCloseOff: ${err}`)
+                        that.log(`comfortCloseOff error: ${err}`)
                     });
                 }).bind(this), this.comfortSwitchTime * 1000);
 
                 that.comfortCloseeOnTimeout.unref();
             });
             comfortCloseOn.stdout.on('error', function (err) {
-                that.log(`comfortClosenOn: ${err}`)
+                that.log(`comfortClosenOn error: ${err}`)
             });
 
         });
         comfortOpenOff.stdout.on('error', function (err) {
-            that.log(`comfortOpenOff: ${err}`)
+            that.log(`comfortOpenOff error: ${err}`)
         });
     }
     callback(null);
 };
 
 
-KFX210Accessory.prototype.getAlarm = function(callback, context) {
-    this.log(`Getting current value of Alarm: ${this.error} via context: ${context}`);
+KFX210Accessory.prototype.getAlarm = function(callback) {
+    this.log(`Getting current value of Alarm: ${this.error}`);
     callback(null, this.alarm);
 };
 
 
-KFX210Accessory.prototype.getError = function(callback, context) {
-    this.log(`Getting current value of Error: ${this.error} via context: ${context}`);
+KFX210Accessory.prototype.getError = function(callback) {
+    this.log(`Getting current value of Error: ${this.error}`);
     callback(null, this.error);
 };
 
