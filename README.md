@@ -30,7 +30,8 @@ Example `config.json` entry:
   {
     "platform": "KFX210",
     "state_poll_interval": 30,
-    "comfort_switch_time": 1
+    "comfort_switch_time": 1,
+    "python_path": "/usr/local/python"
   }
 ]
 ```
@@ -39,6 +40,7 @@ Where:
 
 * `state_poll_interval` is the polling interval in seconds for the `alarm` and `error` states.
 * `comfort_switch_time` is the time in seconds for the comfort open or close relay to be switched on.
+* `python_path` is the path to python for invoking automation HAT API
 
 ### Velux Integration
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 
 let Service;
 let Characteristic;
@@ -36,6 +36,7 @@ function KFX210Accessory(log, config) {
 
     this.statePollInterval = config.state_poll_interval || 10;
     this.comfortSwitchTime = config.comfort_switch_time || 2;
+    this.pythonPath = config.python_path || '/usr/local/python';
 
     this.alarm = false;
     this.error = false;
@@ -62,6 +63,8 @@ function KFX210Accessory(log, config) {
     this.relayScript = path.join(__dirname, 'relay.py');
     this.log(`relayScript: ${this.relayScript}`);
 
+    this.log(`pythonPath: ${this.pythonPath}`);
+
     this.startStateTimeout();
 }
 
@@ -72,11 +75,11 @@ KFX210Accessory.prototype.startStateTimeout = function() {
     this.stateTimeout = setTimeout((function() {
 
         try {
-            const alarmState = execSync(`/usr/local/python ${that.inputScript} 1`);
+            const alarmState = execSync(`${this.pythonPath} ${that.inputScript} 1`);
             that.log(`alarmState result: ${alarmState.toString()}`);
             that.alarm = alarmState.toString().startsWith('1');
 
-            const errorState = execSync(`python ${that.inputScript} 2`);
+            const errorState = execSync(`${this.pythonPath} ${that.inputScript} 2`);
             that.log(`errorState result: ${errorState.toString()}`);
             that.error = errorState.toString().startsWith('1');
         }
@@ -101,12 +104,22 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
 
     this.comfort = comfort;
 
+    const that = this;
+
     try {
         if (this.comfort) {
-            execSync(`/usr/local/python ${this.relayScript} 1 ${this.comfortSwitchTime}`);
+            exec(`${this.pythonPath} ${this.relayScript} 1 ${this.comfortSwitchTime}`, (error) => {
+                if (error) {
+                    that.log(`setComfort exec error: ${error}`);
+                }
+            });
         }
         else {
-            execSync(`/usr/local/python ${this.relayScript} 2 ${this.comfortSwitchTime}`);
+            exec(`${this.pythonPath} ${this.relayScript} 2 ${this.comfortSwitchTime}`, (error) => {
+                if (error) {
+                    that.log(`setComfort exec error: ${error}`);
+                }
+            });
         }
     }
     catch (err) {
