@@ -29,7 +29,7 @@ Example `config.json` entry:
 "platforms": [
   {
     "platform": "VeluxKFX210",
-    "state_poll_interval": 30
+    "state_poll_interval": 30,
     "comfort_switch_time": 1
   }
 ]

@@ -18,9 +18,9 @@ function KFX210Platform(log, config) {
 
 KFX210Platform.prototype.accessories = function(callback) {
 
-    this.alarmPanelAccessory = new AlarmPanelAccessory(this.log, this.config);
+    this.kFX210Accessory = new KFX210Accessory(this.log, this.config);
 
-    callback( [ this.alarmPanelAccessory ] );
+    callback( [ this.kFX210Accessory ] );
 };
 
 
@@ -32,7 +32,7 @@ function KFX210Accessory(log, config) {
 
     this.log = log;
 
-    this.name = 'Velux KFX210l';
+    this.name = 'Velux KFX210';
 
     this.statePollInterval = config.state_poll_interval || 30;
     this.comfortSwitchTime = config.comfort_switch_time || 1;
