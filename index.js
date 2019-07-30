@@ -36,7 +36,7 @@ function KFX210Accessory(log, config) {
 
     this.statePollInterval = config.state_poll_interval || 10;
     this.comfortSwitchTime = config.comfort_switch_time || 2;
-    this.pythonPath = config.python_path || '/usr/local/python';
+    this.pythonPath = config.python_path || '/usr/bin/python';
 
     this.alarm = false;
     this.error = false;
