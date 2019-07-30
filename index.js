@@ -72,13 +72,13 @@ KFX210Accessory.prototype.startStateTimeout = function() {
     this.stateTimeout = setTimeout((function() {
 
         try {
-            const alarmState = execSync(`python ${that.inputScript} 1`);
-            that.log(`alarmState result: ${alarmState}`);
-            that.alarm = (alarmState === '1');
+            const alarmState = execSync(`'python ${that.inputScript} 1'`);
+            that.log(`alarmState result: ${alarmState.toString()}`);
+            that.alarm = (alarmState.toString() === '1');
 
-            const errorState = execSync(`python ${that.inputScript} 2`);
-            that.log(`errorState result: ${errorState}`);
-            that.error = (errorState === '1');
+            const errorState = execSync(`'python ${that.inputScript} 2'`);
+            that.log(`errorState result: ${errorState.toString()}`);
+            that.error = (errorState.toString() === '1');
 
         }
         catch (err) {
@@ -104,10 +104,10 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
 
     try {
         if (this.comfort) {
-            execSync(`python ${this.relayScript} 1 ${this.comfortSwitchTime}`);
+            execSync(`'python ${this.relayScript} 1 ${this.comfortSwitchTime}'`);
         }
         else {
-            execSync(`python ${this.relayScript} 2 ${this.comfortSwitchTime}`);
+            execSync(`'python ${this.relayScript} 2 ${this.comfortSwitchTime}'`);
         }
     }
     catch (err) {
