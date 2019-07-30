@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const path = require('path');
 const spawn = require('child_process').spawn;
 
 let Service;
@@ -56,6 +56,12 @@ function KFX210Accessory(log, config) {
     this.accessoryInformationService.setCharacteristic(Characteristic.Manufacturer, "vectronic");
     this.accessoryInformationService.setCharacteristic(Characteristic.Model, "Velux KFX210");
 
+    this.inputScript = path.join(__dirname, 'input.py');
+    this.log(`inputScript: ${this.inputScript}`);
+
+    this.relayScript = path.join(__dirname, 'relay.py');
+    this.log(`relayScript: ${this.relayScript}`);
+
     this.startStateTimeout();
 }
 
@@ -66,7 +72,7 @@ KFX210Accessory.prototype.startStateTimeout = function() {
 
     this.stateTimeout = setTimeout((function() {
 
-        const alarmInput = spawn('python', ['./input.py', '1']);
+        const alarmInput = spawn('python', [that.inputScript, '1']);
 
         alarmInput.stdout.on('data', function (data) {
             const result = data.toString();
@@ -77,7 +83,7 @@ KFX210Accessory.prototype.startStateTimeout = function() {
             that.log(`alarmInput error: ${err}`)
         });
 
-        const errorInput = spawn('python', ['./input.py', '2']);
+        const errorInput = spawn('python', [that.inputScript, '2']);
 
         errorInput.stdout.on('data', function (data) {
             const result = data.toString();
@@ -110,14 +116,14 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
 
     if (this.comfort) {
         // Turn off the comfort close relay
-        const comfortCloseOff = spawn('python', ['./relay.py', '2', 'off']);
+        const comfortCloseOff = spawn('python', [that.relayScript, '2', 'off']);
 
         comfortCloseOff.stdout.on('close', function () {
 
             that.log('comfortCloseOff completed');
 
             // Turn on the comfort open relay
-            const comfortOpenOn = spawn('python', ['./relay.py', '1', 'on']);
+            const comfortOpenOn = spawn('python', [that.relayScript, '1', 'on']);
 
             comfortOpenOn.stdout.on('close', function () {
 
@@ -126,7 +132,7 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
                 // Set timeout to turn comfort open relay off
                 that.comfortOpenOnTimeout = setTimeout((function() {
 
-                    const comfortOpenOff = spawn('python', ['./relay.py', '1', 'off']);
+                    const comfortOpenOff = spawn('python', [that.relayScript, '1', 'off']);
 
                     comfortOpenOff.stdout.on('close', function () {
                         that.log('comfortOpenOff completed');
@@ -149,13 +155,13 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
     }
     else {
         // Turn off the comfort open relay
-        const comfortOpenOff = spawn('python', ['./relay.py', '1', 'off']);
+        const comfortOpenOff = spawn('python', [that.relayScript, '1', 'off']);
 
         comfortOpenOff.stdout.on('close', function () {
             that.log('comfortOpenOff completed');
 
             // Turn on the comfort close relay
-            const comfortCloseOn = spawn('python', ['./relay.py', '2', 'on']);
+            const comfortCloseOn = spawn('python', [that.relayScript, '2', 'on']);
 
             comfortCloseOn.stdout.on('close', function () {
                 that.log('comfortClosenOn completed');
@@ -163,7 +169,7 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
                 // Set timeout to turn comfort close relay off
                 that.comfortCloseeOnTimeout = setTimeout((function() {
 
-                    const comfortCloseOff = spawn('python', ['./relay.py', '2', 'off']);
+                    const comfortCloseOff = spawn('python', [that.relayScript, '2', 'off']);
 
                     comfortCloseOff.stdout.on('close', function () {
                         that.log('comfortCloseOff completed');

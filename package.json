@@ -23,7 +23,5 @@
   "engines": {
     "homebridge": ">=0.4.46"
   },
-  "dependencies": {
-    "lodash": "^4.17.15"
-  }
+  "dependencies": {}
 }
