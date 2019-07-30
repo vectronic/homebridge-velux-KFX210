@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const spawn = require('child_process').spawn;
+const { execSync } = require('child_process');
 
 let Service;
 let Characteristic;
@@ -67,37 +67,23 @@ function KFX210Accessory(log, config) {
 
 
 KFX210Accessory.prototype.startStateTimeout = function() {
-
-    this.log('startStateTimeout()');
-
     const that = this;
 
     this.stateTimeout = setTimeout((function() {
 
-        this.log('stateTimeout occurred');
+        try {
+            const alarmState = execSync(`python ${that.inputScript} 1`);
+            that.log(`alarmState result: ${alarmState}`);
+            that.alarm = (alarmState === '1');
 
-        const alarmInput = spawn('python', [that.inputScript, '1']);
+            const errorState = execSync(`python ${that.inputScript} 2`);
+            that.log(`errorState result: ${errorState}`);
+            that.error = (errorState === '1');
 
-        alarmInput.stdout.on('data', function (data) {
-            const result = data.toString();
-            that.log(`alarmInput result: ${result}`);
-            that.alarm = (result === '1');
-        });
-        alarmInput.stdout.on('error', function (err) {
-            that.log(`alarmInput error: ${err}`)
-        });
-
-        const errorInput = spawn('python', [that.inputScript, '2']);
-
-        errorInput.stdout.on('data', function (data) {
-            const result = data.toString();
-            that.log(`errorInput result: ${result}`);
-            that.error = (result === '1');
-        });
-        errorInput.stdout.on('error', function (err) {
-            that.log(`errorInput error: ${err}`)
-        });
-
+        }
+        catch (err) {
+            that.log(`stateTimeout error: ${err}`);
+        }
         this.startStateTimeout();
     }).bind(this), this.statePollInterval * 1000);
 
@@ -116,41 +102,16 @@ KFX210Accessory.prototype.setComfort = function(comfort, callback) {
 
     this.comfort = comfort;
 
-    const that = this;
-
-    if (this.comfort) {
-        try {
-            const comfortOpen = spawn('python', [that.relayScript, '1', this.comfortSwitchTime]);
-
-            comfortOpen.stdout.on('close', function () {
-
-                that.log('comfortOpen completed');
-
-            });
-            comfortOpen.stdout.on('error', function (err) {
-                that.log(`comfortOpen error: ${err}`)
-            });
+    try {
+        if (this.comfort) {
+            execSync(`python ${this.relayScript} 1 ${this.comfortSwitchTime}`);
         }
-        catch (error) {
-            this.log(`Failed to spawn: ${error}`);
+        else {
+            execSync(`python ${this.relayScript} 2 ${this.comfortSwitchTime}`);
         }
     }
-    else {
-        try {
-            const comfortClose = spawn('python', [that.relayScript, '2', this.comfortSwitchTime]);
-
-            comfortClose.stdout.on('close', function () {
-
-                that.log('comfortClose completed');
-
-            });
-            comfortClose.stdout.on('error', function (err) {
-                that.log(`comfortClose error: ${err}`)
-            });
-        }
-        catch (error) {
-            this.log(`Failed to spawn: ${error}`);
-        }
+    catch (err) {
+        this.log(`comfort error: ${err}`);
     }
     callback(null);
 };
