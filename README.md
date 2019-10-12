@@ -1,4 +1,4 @@
-# homebridge-plugin-velux-KFX210
+# homebridge-velux-KFX210
 > A [Homebridge](https://github.com/nfarina/homebridge) plugin integrating with a Velux KFX 210 control panel via RaspberryPi + [Pimoroni Automation HAT](https://github.com/pimoroni/automation-hat/blob/master/documentation/REFERENCE.md).
 
 ### Aim
