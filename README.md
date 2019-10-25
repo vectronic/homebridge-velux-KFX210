@@ -44,9 +44,9 @@ Example `config.json` entry:
 
 Where:
 
-* `state_poll_interval` is the polling interval in seconds for the `alarm` and `error` states.
-* `comfort_switch_time` is the time in seconds for the comfort open or close relay to be switched on.
-* `python_path` is the path to python for invoking automation HAT API
+* `state_poll_interval` is the polling interval in seconds for the `alarm` and `error` states. Default is `10`.
+* `comfort_switch_time` is the time in seconds for the comfort open or close relay to be switched on. Default is `3`.
+* `python_path` is the path to python for invoking automation HAT API. Default is `/usr/bin/python`.
 
 ### Velux Integration
 

@@ -35,7 +35,7 @@ function KFX210Accessory(log, config) {
     this.name = 'Velux KFX210';
 
     this.statePollInterval = config.state_poll_interval || 10;
-    this.comfortSwitchTime = config.comfort_switch_time || 2;
+    this.comfortSwitchTime = config.comfort_switch_time || 3;
     this.pythonPath = config.python_path || '/usr/bin/python';
 
     this.alarm = false;
@@ -99,33 +99,40 @@ KFX210Accessory.prototype.getComfort = function(callback) {
 };
 
 
+KFX210Accessory.prototype.execRelay = function(relayNumber, callback) {
+
+    const that = this;
+
+    exec(`${this.pythonPath} ${this.relayScript} ${relayNumber} ${this.comfortSwitchTime}`, (error, stdout, stderr) => {
+        if (error) {
+            that.log(`setComfort exec error: ${error}`);
+            callback(error);
+            return;
+        }
+        that.log(`setComfort stdout: ${stdout}`);
+        that.log(`setComfort stderr: ${stderr}`);
+        callback();
+    });
+};
+
+
 KFX210Accessory.prototype.setComfort = function(comfort, callback) {
     this.log(`Request to set current value of Comfort to: ${comfort}`);
 
     this.comfort = comfort;
 
-    const that = this;
-
     try {
         if (this.comfort) {
-            exec(`${this.pythonPath} ${this.relayScript} 1 ${this.comfortSwitchTime}`, (error) => {
-                if (error) {
-                    that.log(`setComfort exec error: ${error}`);
-                }
-            });
+            this.execRelay(1, callback);
         }
         else {
-            exec(`${this.pythonPath} ${this.relayScript} 2 ${this.comfortSwitchTime}`, (error) => {
-                if (error) {
-                    that.log(`setComfort exec error: ${error}`);
-                }
-            });
+            this.execRelay(2, callback);
         }
     }
     catch (err) {
-        this.log(`comfort error: ${err}`);
+        this.log(`setComfort error: ${err}`);
+        callback(err);
     }
-    callback(null);
 };
 
 
