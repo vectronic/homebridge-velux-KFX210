@@ -35,8 +35,8 @@ Example `config.json` entry:
 "platforms": [
   {
     "platform": "KFX210",
-    "state_poll_interval": 30,
-    "comfort_switch_time": 1,
+    "state_poll_interval": 3,
+    "comfort_switch_time": 0.5,
     "python_path": "/usr/local/python"
   }
 ]
@@ -44,9 +44,12 @@ Example `config.json` entry:
 
 Where:
 
-* `state_poll_interval` is the polling interval in seconds for the `alarm` and `error` states. Default is `10`.
-* `comfort_switch_time` is the time in seconds for the comfort open or close relay to be switched on. Default is `3`.
+* `state_poll_interval` is the polling interval in seconds for the `alarm` and `error` states. Default is `3`.
+* `comfort_switch_time` is the time in seconds for the comfort open or close relay to be switched on. Default is `0.5`.
 * `python_path` is the path to python for invoking automation HAT API. Default is `/usr/bin/python`.
+
+**NOTE**: The `comfort_switch_time` should be set to 0.5 seconds to simulate a momentary push of a comfort button.
+Any longer and it will be treated as a button hold and therefore should be set to several seconds. 
 
 ### Velux Integration
 

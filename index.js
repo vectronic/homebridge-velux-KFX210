@@ -34,8 +34,8 @@ function KFX210Accessory(log, config) {
 
     this.name = 'Velux KFX210';
 
-    this.statePollInterval = config.state_poll_interval || 10;
-    this.comfortSwitchTime = config.comfort_switch_time || 3;
+    this.statePollInterval = config.state_poll_interval || 3;
+    this.comfortSwitchTime = config.comfort_switch_time || 0.5;
     this.pythonPath = config.python_path || '/usr/bin/python';
 
     this.alarm = false;
