@@ -25,6 +25,7 @@ Otherwise, you can use a separate Homekit sensor to maintain track of the vent c
 1. Install Homebridge using: `npm install -g homebridge`
 1. Install this plugin using: `npm install -g homebridge-velux-kfx210`
 1. Update your configuration file. See a sample `config.json` snippet below.
+1. Ensure `python` is installed and on the path.
 
 ### Configuration
 
