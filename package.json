@@ -1,26 +1,47 @@
 {
   "name": "homebridge-velux-kfx210",
-  "version": "1.0.1",
+  "displayName": "Homebridge Velux KFX210",
+  "type": "module",
+  "version": "2.0.0",
   "description": "A Homebridge plugin integrating with a Velux KFX 210 control panel via RaspberryPi + Pimoroni Automation HAT.",
-  "main": "index.js",
+  "author": "vectronic",
+  "license": "MIT",
+  "homepage": "https://github.com/vectronic/homebridge-velux-KFX210#readme",
   "repository": {
     "type": "git",
-    "url": "git://github.com/vectronic/homebridge-plugin-velux-KFX210.git"
+    "url": "git+https://github.com/vectronic/homebridge-velux-KFX210.git"
   },
   "bugs": {
-    "url": "https://github.com/vectronic/homebridge-plugin-velux-KFX210/issues"
+    "url": "https://github.com/vectronic/homebridge-velux-KFX210/issues"
   },
   "keywords": [
     "homebridge-plugin",
     "velux",
     "raspberrypi",
-    "pimorono",
+    "pimoroni",
     "automation"
   ],
-  "author": "vectronic",
-  "license": "MIT",
+  "main": "dist/index.js",
   "engines": {
-    "homebridge": ">=0.4.46"
+    "node": "^20.18.0 || ^22.10.0 || ^24.0.0",
+    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
   },
-  "dependencies": {}
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "lint": "eslint . --max-warnings=0",
+    "prepublishOnly": "npm run lint && npm run build",
+    "watch": "npm run build && npm link && nodemon"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "homebridge": "^2.0.0-beta.55",
+    "nodemon": "^3.1.11",
+    "rimraf": "^6.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4"
+  }
 }

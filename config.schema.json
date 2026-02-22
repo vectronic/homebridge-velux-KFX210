@@ -1,0 +1,37 @@
+{
+  "pluginAlias": "KFX210",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "Velux KFX210",
+        "required": true
+      },
+      "state_poll_interval": {
+        "title": "State Poll Interval",
+        "description": "Polling interval in seconds for alarm and error states.",
+        "type": "number",
+        "default": 3,
+        "minimum": 1
+      },
+      "comfort_switch_time": {
+        "title": "Comfort Switch Time",
+        "description": "Time in seconds for the comfort open or close relay to be switched on. Set to 0.5 for momentary push, or several seconds for button hold.",
+        "type": "number",
+        "default": 0.5,
+        "minimum": 0.1
+      },
+      "python_path": {
+        "title": "Python Path",
+        "description": "Path to python for invoking Automation HAT API.",
+        "type": "string",
+        "default": "/usr/bin/python"
+      }
+    },
+    "required": ["name"]
+  }
+}
