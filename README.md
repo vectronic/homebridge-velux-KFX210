@@ -22,10 +22,21 @@ Otherwise, you can use a separate Homekit sensor to maintain track of the vent c
 
 ### Installation
 
-1. Install Homebridge using: `npm install -g homebridge`
-1. Install this plugin using: `npm install -g homebridge-velux-kfx210`
-1. Update your configuration file. See a sample `config.json` snippet below.
-1. Ensure `python` is installed and on the path.
+1. Install Homebridge on the Raspberry PI: https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian
+1. Install this plugin using: `sudo hb-service add homebridge-velux-kfx210`
+1. Ensure `python`.
+1. Install automation hat support: `https://github.com/pimoroni/automation-hat` as a user with sudo access (to allow system install):
+   * `git clone https://github.com/pimoroni/automation-hat`
+   * `cd automation-hat`
+   * `./install.sh`
+1. ALSO install automation hat support running in the `homebridge` user shell (to allow homebridge access to the virtual environment):
+   * `sudo -u homebridge -H bash` and then:
+   * `cd /home/homebridge`
+   * `git clone https://github.com/pimoroni/automation-hat`
+   * `cd automation-hat`
+   * `./install.sh` (ctrl-c the steps requiring sudo access as these were done in the last step)
+1. Update the `homebridge-velux-kfx210` plugin configuration See a sample `config.json` snippet below.
+   *  NOTE: Make sure to set the `homebridge-velux-kfx210` plugin `python_path` property to use `pimoroni` virtual environment python installation (see example below).
 
 ### Configuration
 
@@ -38,7 +49,7 @@ Example `config.json` entry:
     "platform": "KFX210",
     "state_poll_interval": 3,
     "comfort_switch_time": 0.5,
-    "python_path": "/usr/local/python"
+    "python_path": "/home/homebridge/.virtualenvs/pimoroni/bin/python"
   }
 ]
 ```
@@ -47,7 +58,7 @@ Where:
 
 * `state_poll_interval` is the polling interval in seconds for the `alarm` and `error` states. Default is `3`.
 * `comfort_switch_time` is the time in seconds for the comfort open or close relay to be switched on. Default is `0.5`.
-* `python_path` is the path to python for invoking automation HAT API. Default is `/usr/bin/python`.
+* `python_path` is the path to python for invoking automation HAT API. This should point to the virtual environment created by the Pimoroni automation hat installer when running as the `homebridge` user. Default is `/usr/bin/python`.
 
 **NOTE**: The `comfort_switch_time` should be set to 0.5 seconds to simulate a momentary push of a comfort button.
 Any longer and it will be treated as a button hold and therefore should be set to several seconds. 
