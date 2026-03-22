@@ -2,7 +2,7 @@
   "name": "homebridge-velux-kfx210",
   "displayName": "Homebridge Velux KFX210",
   "type": "module",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A Homebridge plugin integrating with a Velux KFX 210 control panel via RaspberryPi + Pimoroni Automation HAT.",
   "author": "vectronic",
   "license": "MIT",
